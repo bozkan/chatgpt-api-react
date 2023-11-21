@@ -28,26 +28,16 @@ export default function Home() {
     const threadID = 'thread_J34NM8CLenZdbAMA23z2j7me';
 
     const data = {
-      model: "gpt-4-1106-preview",
-      messages: [
-        {
-            role: "system",
-            content: "You are a helpful assistant."
-        },
-        {
-            role: "user",
-            content: "What is the capital of France?"
-        }
-      ]
+      "content": message
     };
 
     setIsLoading(true);
 
     axios.post(url, data).then((response) => {
-      console.log(response);
-      setChatLog((prevChatLog) => [...prevChatLog, { type: 'bot', message: response.data.choices[0].message.content }])
+      setChatLog((prevChatLog) => [...prevChatLog, { type: 'bot', message: response.data.message }])
       setIsLoading(false);
     }).catch((error) => {
+      console.log("LOOLOO!!!");
       setIsLoading(false);
       console.log(error);
     })
