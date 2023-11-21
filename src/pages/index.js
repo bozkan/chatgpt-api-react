@@ -25,10 +25,20 @@ export default function Home() {
 
   const sendMessage = (message) => {
     const url = '/api/chat';
+    const threadID = 'thread_J34NM8CLenZdbAMA23z2j7me';
 
     const data = {
-      model: "gpt-3.5-turbo-0301",
-      messages: [{ "role": "user", "content": message }]
+      model: "gpt-4-1106-preview",
+      messages: [
+        {
+            role: "system",
+            content: "You are a helpful assistant."
+        },
+        {
+            role: "user",
+            content: "What is the capital of France?"
+        }
+      ]
     };
 
     setIsLoading(true);
