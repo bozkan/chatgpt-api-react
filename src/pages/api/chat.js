@@ -13,7 +13,7 @@ const sleep = (ms) => {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const addMessage = (threadId, content) => {
+const addMessage = (role, threadId, content) => {
     return openai.beta.threads.messages.create(
         threadId,
         { role: "user", content }
@@ -64,13 +64,8 @@ export default async function handler(req, res) {
   else {
     try {
       const { body } = req;
-      const url = 'https://api.openai.com/v1/assistants/asst_9Ag52mNOljbOZ3oVdjfP0rIB/messages';
-      const headers = {
-        'Content-type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
-      };
 
-      await addMessage(threadID, body.content);
+      await addMessage("user", threadID, body.content);
   
       const run = await openai.beta.threads.runs.create(
           threadID,
