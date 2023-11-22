@@ -37,7 +37,6 @@ export default function Home() {
       setChatLog((prevChatLog) => [...prevChatLog, { type: 'bot', message: response.data.message }])
       setIsLoading(false);
     }).catch((error) => {
-      console.log("LOOLOO!!!");
       setIsLoading(false);
       console.log(error);
     })
@@ -46,7 +45,21 @@ export default function Home() {
   return (
     <div className="container mx-auto max-w-[700px]">
       <div className="flex flex-col h-screen bg-gray-900">
-        <h1 className="bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text text-center py-3 font-bold text-6xl">ChatGPT</h1>
+        <img src="logo.png" alt="RoboMinder Logo" class="mt-3 w-1/2 mx-auto mb-2"/>
+        <div class="flex justify-between px-5 text-white mb-1">
+          <span>
+              Case: 21/10/2023 10:23
+          </span>
+          <span>
+            <img src="record.png" alt="record" width="32"/>
+          </span>
+        </div>
+        <div class="px-5">
+          <video className="mx-auto" width="920" height="518" controls autoPlay muted loop>
+              <source src="crash.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+          </video>
+        </div>
         <div className="flex-grow p-6">
           <div className="flex flex-col space-y-4">
           {

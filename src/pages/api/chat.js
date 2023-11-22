@@ -9,12 +9,47 @@ const openai = new OpenAI({
 const threadID = process.env.THREAD_ID;
 const assistantID = process.env.ASSISTANT_ID;
 
+const sleep = (ms) => {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 const addMessage = (threadId, content) => {
     return openai.beta.threads.messages.create(
         threadId,
         { role: "user", content }
     )
 }
+
+const terminalStates = ["cancelled", "failed", "completed", "expired"];
+const statusCheckLoop = async (openAiThreadId, runId) => {
+    const run = await openai.beta.threads.runs.retrieve(
+        openAiThreadId,
+        runId
+    );
+
+    if(terminalStates.indexOf(run.status) < 0){
+        await sleep(1000);
+        return statusCheckLoop(openAiThreadId, runId);
+    }
+
+    return run.status;
+}
+
+const checkStatusAndPrintMessages = async (threadId, runId) => {
+  let runStatus = await openai.beta.threads.runs.retrieve(threadId, runId);
+  if(runStatus.status === "completed"){
+      let messages = await openai.beta.threads.messages.list(threadId);
+      messages.data.forEach((msg) => {
+          const role = msg.role;
+          const content = msg.content[0].text.value; 
+          console.log(
+              `${role.charAt(0).toUpperCase() + role.slice(1)}: ${content}`
+          );
+      });
+  } else {
+      console.log("Run is not completed yet.");
+  }  
+};
 
 export default async function handler(req, res) {
   const referer = req.headers.referer || req.headers.referrer; // get the referer from the request headers
@@ -42,10 +77,11 @@ export default async function handler(req, res) {
           { assistant_id: assistantID }
       );
 
+      const status = await statusCheckLoop(threadID, run.id);
+
       const messages = await openai.beta.threads.messages.list(threadID);
       const msg = messages.data;
-      console.log("MESS:", msg[msg.length-1].content);
-      let response = msg[msg.length-1].content[0].text.value;
+      let response = msg[0].content[0].text.value;
       res.status(200).json({ message: response });
     } catch (error) {
       console.log(error);
