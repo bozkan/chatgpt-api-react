@@ -13,6 +13,20 @@ export default function Home() {
   const [chatLog, setChatLog] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
+
+  useEffect(() => {
+    // Function to create a new run when the component mounts
+    const createRun = async () => {
+      try {
+        await axios.post('/api/createRun');
+      } catch (error) {
+        console.error('Error creating run:', error);
+      }
+    };
+
+    createRun();
+  }, []);
+
   const handleSubmit = (event) => {
     event.preventDefault();
 

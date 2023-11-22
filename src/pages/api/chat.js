@@ -66,20 +66,14 @@ export default async function handler(req, res) {
       const { body } = req;
 
       await addMessage("user", threadID, body.content);
-  
-      const run = await openai.beta.threads.runs.create(
-          threadID,
-          { assistant_id: assistantID }
-      );
 
-      const status = await statusCheckLoop(threadID, run.id);
-
+      // Get the latest messages from the thread
       const messages = await openai.beta.threads.messages.list(threadID);
       const msg = messages.data;
       let response = msg[0].content[0].text.value;
       res.status(200).json({ message: response });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       res.status(500).json({ message: "Something went wrong" });
     }
   }
