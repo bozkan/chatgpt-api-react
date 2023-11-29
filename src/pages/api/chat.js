@@ -3,7 +3,7 @@ import axios from 'axios';
 import OpenAI from 'openai';
 
 export const config = {
-  maxDuration: 30
+  maxDuration: 60
 };
 
 const openai = new OpenAI({
